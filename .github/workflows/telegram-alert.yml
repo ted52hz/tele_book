@@ -1,6 +1,7 @@
 name: Notify Telegram
 
 on:
+  workflow_dispatch:
   push:            # Khi có push
   schedule:        # Hoặc lên lịch tự động
     - cron: '45 8 * * *'    # Mỗi ngày 6h sáng (UTC), điều chỉnh theo ý bạn
