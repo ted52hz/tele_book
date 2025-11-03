@@ -3,8 +3,8 @@ name: Notify Telegram
 on:
   workflow_dispatch:
   push:            # Khi có push
-  schedule:        # Hoặc lên lịch tự động
-    - cron: '45 8 * * *'    # Mỗi ngày 6h sáng (UTC), điều chỉnh theo ý bạn
+  schedule:        # Chạy theo lịch tự động
+    - cron: '45 8 * * *'    # Mỗi ngày 08:45 UTC (15:45 UTC+7)
   workflow_run:    # Khi workflow cụ thể fail/success
     workflows: ["CI"]  # Tên workflow muốn lắng nghe (ví dụ "CI")
     types: [completed]  # Khi workflow hoàn tất
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Send message to Telegram
+      - name: Send message to Telegram (debug)
         env:
           TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -31,7 +31,14 @@ jobs:
         run: |
           MESSAGE="ec o ec
           "
-          curl -s -X POST https://api.telegram.org/bot$TG_TOKEN/sendMessage \
-                -d chat_id="$TG_CHAT" -d text="$MESSAGE"
 
-# Tuỳ trường hợp, có thể tùy chỉnh trigger cho phù hợp.
+          # In giá trị biến để debug
+          echo "TG_TOKEN=$TG_TOKEN"
+          echo "TG_CHAT=$TG_CHAT"
+          echo "MESSAGE=$MESSAGE"
+
+          CURL_CMD="curl -s -X POST https://api.telegram.org/bot$TG_TOKEN/sendMessage -d chat_id=\"$TG_CHAT\" -d text=\"$MESSAGE\""
+          echo "CURL command is:"
+          echo $CURL_CMD
+          # Thực thi dòng lệnh gửi Telegram
+          eval $CURL_CMD
